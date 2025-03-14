@@ -17,7 +17,7 @@ const Header = ({
 }) => {
   // variables
   const [search, setSearch] = useState(location);
-  const {isMobileOnly, isDesktop} = useDeviceDetection()
+  const {isMobileOnly} = useDeviceDetection()
 
   // functions
   const handleClick = (e) => {
@@ -49,11 +49,11 @@ const Header = ({
   }, [location]);
 
   return (
-    <header className={`col-11 mx-auto d-flex justify-content-between align-items-center ${!isDesktop ? "mt-3" : ""}`}>
+    <header className={`col-11 mx-auto d-flex justify-content-between align-items-center mt-lg-4 mt-md-4 mt-3`}>
       <div className={`${isMobileOnly ? "col-2" : ""}`}>
         <div
           onClick={() => setTheme(!theme)}
-          className={`border rounded-5 d-flex justify-content-${
+          className={`border rounded-5 d-flex py-1 justify-content-${
             theme ? "start" : "end"
           }`}
           style={{
@@ -63,7 +63,7 @@ const Header = ({
           }}
         >
           <i
-            className={`bi bi-${!theme ? "sun-fill" : "moon-stars-fill"} mx-1`}
+            className={`bi bi-${!theme ? "sun-fill" : "moon-stars-fill"} mx-2`}
           ></i>
         </div>
         <span style={{ fontSize: ".8rem", transition: "all 0.3s ease" }} className="fw-bold d-lg-flex d-md-flex d-none">

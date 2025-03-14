@@ -43,10 +43,10 @@ const WeeklyForecast = ({ forecast, theme }) => {
 
   return (
     <div
-      className={`col-lg-8 col-sm-12 col-12 rounded-4 d-flex flex-column text-center justify-content-around ${!isDesktop ? "mb-4" : ""} ${styles.widgets}`}
+      className={`col-lg-8 col-sm-12 col-12 rounded-4 d-flex flex-column text-center justify-content-around  ${!isDesktop ? "mb-4" : ""} ${styles.widgets}`}
       style={{ "--widgets-color": `${theme ? "#d9d9d9" : "#444444"}` }}
     >
-      <h4 className="fw-bold">Hourly Forecast:</h4>
+      <h4 className="fw-bold my-md-3">Hourly Forecast:</h4>
       <ul className="p-0 col-lg-11 col-12 d-flex mx-auto justify-content-around">
         {todayForecast.map((item, index) => {
           return (

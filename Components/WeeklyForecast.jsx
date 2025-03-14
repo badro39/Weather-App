@@ -56,14 +56,14 @@ const WeeklyForceast = ({ forecast, theme }) => {
 
   return (
     <div
-      className={`col-lg-3 col-md-6 col-sm-12 col-12 rounded-4 d-flex flex-column justify-content-between ${styles.widgets}`}
+      className={`col-lg-3 col-md-6 col-sm-12 col-12 rounded-4 d-flex flex-column justify-content-between py-2 ${styles.widgets}`}
       style={{ "--widgets-color": `${theme ? "#d9d9d9" : "#444444"}` }}
     >
       <h4 className="mx-auto fw-bold">5 Days Forecast:</h4>
-      <ul className="p-0 d-flex flex-wrap m-0">
+      <ul className="d-flex flex-wrap m-0 p-0">
         {weeklyWeather.map((item, index) => {
           return (
-            <li key={index} className="w-100 mx-auto d-flex justify-content-around ">
+            <li key={index} className="w-100 mx-auto py-0 d-flex justify-content-around ">
               <p>
                 <Image
                   src={item.icon}
@@ -74,7 +74,7 @@ const WeeklyForceast = ({ forecast, theme }) => {
                 />
               </p>
               <p className="fw-medium">{item.avgTemp}°C</p>
-              <p className="col-lg-6 col-sm-5 col-5 fw-medium" >{item.date}</p>
+              <p className="col-lg-6 col-sm-6 col-6 fw-medium" >{item.date}</p>
             </li>
           );
         })}

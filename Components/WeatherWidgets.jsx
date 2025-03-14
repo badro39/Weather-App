@@ -15,7 +15,7 @@ const WeatherWidgets = ({ data, theme }) => {
   const { speed } = data.wind;
   const { visibility } = data;
 
-  const {isMobileOnly} = useDeviceDetection()
+  const { isMobileOnly } = useDeviceDetection();
 
   const sunriseTime = new Date(sunrise * 1000).toLocaleTimeString([], {
     hour: "2-digit",
@@ -48,10 +48,10 @@ const WeatherWidgets = ({ data, theme }) => {
 
   return (
     <div
-      className={`col-lg-7 col-sm-12 col-12 rounded-4 d-flex justify-content-around py-2 ${styles.widgets}`}
+      className={`col-lg-7 col-sm-12 col-12 rounded-4 d-flex justify-content-around py-3 ${styles.widgets}`}
       style={{ "--widgets-color": `${theme ? "#d9d9d9" : "#444444"}` }}
     >
-      <div className="col-lg-3 col-sm-4 col-4">
+      <div className="col-lg-3 col-md-4 col-sm-4 col-5">
         <div>
           <h1
             className={styles.colorGradiant}
@@ -87,7 +87,7 @@ const WeatherWidgets = ({ data, theme }) => {
           </div>
         </div>
       </div>
-      <div className="col-lg-3 col-sm-3 col-3 d-flex flex-column justify-content-between ">
+      <div className="col-lg-3 col-md-3 col-sm-3 col-3 d-flex flex-column justify-content-end ">
         <div className="h-75 d-flex">
           <Image
             src={ImgSrc}
@@ -100,17 +100,23 @@ const WeatherWidgets = ({ data, theme }) => {
         </div>
         <h4 className="bg-succes text-center fw-bold">{main}</h4>
       </div>
-      <div className="col-lg-3 col-sm-4 col-4 d-flex">
-        <ul className="d-flex flex-wrap my-auto p-0">
+      <div className="col-lg-3 col-md-4 col-sm-4 col-4 d-flex align-items-center">
+        <ul className="d-flex flex-wrap p-0 m-0">
           {widgetOptions.map((item, index) => {
             return (
               <li key={index} className="col-6 text-center my-1">
                 <i className={`bi bi-${item.class} fs-2`}></i>
-                <p className="m-0 fw-medium">
+                <p
+                  className="m-0 fw-medium"
+                  style={{ fontSize: `${isMobileOnly ? ".8rem" : ""}` }}
+                >
                   {item.value}
                   {item.Unit}
                 </p>{" "}
-                <p className="m-0 text-muted" style={{ fontSize: `${isMobileOnly ? ".7rem" : ".8rem"}` }}>
+                <p
+                  className={`m-0 ${theme ? "text-muted" : "text-light"}`}
+                  style={{ fontSize: `${isMobileOnly ? ".7rem" : ".8rem"}` }}
+                >
                   {item.name}
                 </p>
               </li>

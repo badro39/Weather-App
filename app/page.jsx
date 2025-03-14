@@ -19,7 +19,7 @@ export default function Home() {
   const [forecast, setForecast] = useState(null);
   const [error, setError] = useState(false);
   const [theme, setTheme] = useState(true);
-  const {isTablet} = useDeviceDetection()
+  const { isTablet } = useDeviceDetection();
 
   // Get instant weather data
   const handleGet = async () => {
@@ -77,9 +77,7 @@ export default function Home() {
 
   return (
     <div
-      className={`positoin-relative d-flex flex-column ${
-        !weather || !forecast ? "pt-3" : "justify-content-center"
-      } bg-success`}
+      className="d-flex flex-column"
       style={{
         background: `linear-gradient(135deg, ${
           theme ? "#fff , #466173" : "#9e9e9e, #383838"
@@ -96,7 +94,7 @@ export default function Home() {
           <p className="m-0">Geolocation is not supported by your browser</p>
         </div>
       )}
-      <div className="h-100">
+      <div>
         <Header
           location={weather ? weather.name : ""}
           setLocation={setLocation}
