@@ -5,53 +5,50 @@ import styles from "../app/page.module.css";
 // React hooks
 import { useEffect, useState } from "react";
 
-const WeeklyForceast = ({ forecast, theme }) => {
+// Average Daily temp
+const extractWeatherData = (data) => {
+  const dailyTemps = {};
+
+  data.list.forEach((entry) => {
+    const date = entry.dt_txt.split(" ")[0]; // Extract YYYY-MM-DD
+    const temp = entry.main.temp;
+    const icon = `http://openweathermap.org/img/wn/${entry.weather[0].icon}.png`;
+
+    if (!dailyTemps[date]) {
+      dailyTemps[date] = { sum: 0, count: 0, icon };
+    }
+
+    dailyTemps[date].sum += temp;
+    dailyTemps[date].count += 1;
+  });
+
+  return dailyTemps;
+};
+
+const calculateDailyAverages = (dailyTemps) => {
+  return Object.keys(dailyTemps).map((date) => ({
+    icon: dailyTemps[date].icon,
+    date: new Date(date).toLocaleDateString("en-GB", {
+      weekday: "long",
+      day: "numeric",
+      month: "short",
+    }),
+    avgTemp: (dailyTemps[date].sum / dailyTemps[date].count).toFixed(0),
+  }));
+};
+
+const WeeklyForecast = ({ forecast, theme }) => {
   // variables
   const [weeklyWeather, setWeeklyWeather] = useState([]);
-  
-  //functions
-  // // Average Daily temp
-  const extractWeatherData = (data) => {
-    const dailyTemps = {};
-    
-    data.list.forEach((entry) => {
-      const date = entry.dt_txt.split(" ")[0]; // Extract YYYY-MM-DD
-      const temp = entry.main.temp;
-      const icon = `http://openweathermap.org/img/wn/${entry.weather[0].icon}.png`;
-      
-      if (!dailyTemps[date]) {
-        dailyTemps[date] = { sum: 0, count: 0, icon };
-      }
-      
-      dailyTemps[date].sum += temp;
-      dailyTemps[date].count += 1;
-    });
-    
-    return dailyTemps;
-  };
-  
-  const calculateDailyAverages = (dailyTemps) => {
-    return Object.keys(dailyTemps).map((date) => ({
-      icon: dailyTemps[date].icon,
-      date: new Date(date).toLocaleDateString("en-GB", {
-        weekday: "long",
-        day: "numeric",
-        month: "short",
-      }),
-      avgTemp: (dailyTemps[date].sum / dailyTemps[date].count).toFixed(0),
-    }));
-  };
-  
-  const getDailyAverages = (data) => {
-    if (!data?.list) return;
-    
-    const dailyTemps = extractWeatherData(data);
-    const weeklyTemps = calculateDailyAverages(dailyTemps);
-    setWeeklyWeather(weeklyTemps.length > 5 ? weeklyTemps.slice(1) : weeklyTemps); // Exclude today
-  };
 
   useEffect(() => {
-    getDailyAverages(forecast);
+    if (!forecast?.list) return;
+
+    const dailyTemps = extractWeatherData(forecast);
+    const weeklyTemps = calculateDailyAverages(dailyTemps);
+    setWeeklyWeather(
+      weeklyTemps.length > 5 ? weeklyTemps.slice(1) : weeklyTemps
+    ); // Exclude today
   }, [forecast]);
 
   return (
@@ -63,7 +60,10 @@ const WeeklyForceast = ({ forecast, theme }) => {
       <ul className="d-flex flex-wrap m-0 p-0">
         {weeklyWeather.map((item, index) => {
           return (
-            <li key={index} className="w-100 mx-auto py-0 d-flex justify-content-around ">
+            <li
+              key={index}
+              className="w-100 mx-auto py-0 d-flex justify-content-around "
+            >
               <p>
                 <Image
                   src={item.icon}
@@ -74,7 +74,7 @@ const WeeklyForceast = ({ forecast, theme }) => {
                 />
               </p>
               <p className="fw-medium">{item.avgTemp}°C</p>
-              <p className="col-lg-6 col-sm-6 col-6 fw-medium" >{item.date}</p>
+              <p className="col-lg-6 col-sm-6 col-6 fw-medium">{item.date}</p>
             </li>
           );
         })}
@@ -82,4 +82,4 @@ const WeeklyForceast = ({ forecast, theme }) => {
     </div>
   );
 };
-export default WeeklyForceast;
+export default WeeklyForecast;

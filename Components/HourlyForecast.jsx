@@ -7,6 +7,20 @@ import Image from "next/image";
 // Hooks
 import { useDeviceDetection } from "@/hooks/deviceDetection";
 
+// functions
+const convertUnixToTimeIntl = (unixTimestamp) => {
+  // Convert Unix timestamp to milliseconds
+  const date = new Date(unixTimestamp * 1000);
+
+  // Force 24-hour format
+  return date.toLocaleTimeString("en-GB", {
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: false, // Ensures 24-hour format
+  });
+};
+
 const WeeklyForecast = ({ forecast, theme }) => {
   // variables
   const todayForecast = forecast.list.slice(0, 5).map((item) => ({
@@ -16,21 +30,9 @@ const WeeklyForecast = ({ forecast, theme }) => {
     wind: item.wind,
   }));
 
-  const {isMobileOnly, isDesktop} = useDeviceDetection()
+  const { isMobileOnly, isDesktop } = useDeviceDetection();
 
   // Functions
-  const convertUnixToTimeIntl = (unixTimestamp) => {
-    // Convert Unix timestamp to milliseconds
-    const date = new Date(unixTimestamp * 1000);
-
-    // Force 24-hour format
-    return date.toLocaleTimeString("en-GB", {
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: false, // Ensures 24-hour format
-    });
-  };
 
   const DayOrNight = (date) => {
     if (
@@ -43,7 +45,9 @@ const WeeklyForecast = ({ forecast, theme }) => {
 
   return (
     <div
-      className={`col-lg-8 col-sm-12 col-12 rounded-4 d-flex flex-column text-center justify-content-around  ${!isDesktop ? "mb-4" : ""} ${styles.widgets}`}
+      className={`col-lg-8 col-sm-12 col-12 rounded-4 d-flex flex-column text-center justify-content-around  ${
+        !isDesktop ? "mb-4" : ""
+      } ${styles.widgets}`}
       style={{ "--widgets-color": `${theme ? "#d9d9d9" : "#444444"}` }}
     >
       <h4 className="fw-bold my-md-3">Hourly Forecast:</h4>

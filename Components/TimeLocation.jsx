@@ -1,19 +1,19 @@
 // Styles
 import styles from "@/app/page.module.css";
 
+const time = new Date().toLocaleTimeString("en-US", {
+  hour: "numeric",
+  minute: "numeric",
+  hour12: false, // Set to `true` for AM/PM format
+});
+
+const date = new Date().toLocaleDateString("en-US", {
+  weekday: "long",
+  day: "numeric",
+  month: "long",
+});
+
 const TimeLocation = ({ name, theme }) => {
-  const time = new Date().toLocaleTimeString("en-US", {
-    hour: "numeric",
-    minute: "numeric",
-    hour12: false, // Set to `true` for AM/PM format
-  });
-
-  const date = new Date().toLocaleDateString("en-US", {
-    weekday: "long",
-    day: "numeric",
-    month: "long",
-  });
-
   return (
     <div
       className={`rounded-4 col-lg-4 col-md-5 col-sm-12 col-12 d-flex flex-column justify-content-center text-center ${styles.widgets}`}

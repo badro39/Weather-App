@@ -35,7 +35,7 @@ const Header = ({
             lon: position.coords.longitude,
           });
         },
-        (error) => setError(error.message)
+        (error) => console.error(error.message)
       );
     } else {
       setError(true);

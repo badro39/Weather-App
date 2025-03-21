@@ -1,14 +1,14 @@
 .widgets {
   background-color: var(--widgets-color);
-  box-shadow: 10px 10px 5px 0px rgba(70, 70, 70, 0.75);
   -webkit-box-shadow: 10px 10px 5px 0px rgba(70, 70, 70, 0.75);
   -moz-box-shadow: 10px 10px 5px 0px rgba(70, 70, 70, 0.75);
+  box-shadow: 10px 10px 5px 0px rgba(70, 70, 70, 0.75);
 }
 
 .colorGradiant {
   background: linear-gradient(to right, var(--colorGradiant));
-  background-clip: text;
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
   font-size: 3.4rem;
   margin-bottom: 0;

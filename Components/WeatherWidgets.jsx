@@ -6,6 +6,16 @@ import Image from "next/image";
 
 // Hooks
 import { useDeviceDetection } from "@/hooks/deviceDetection";
+import { useMemo } from "react";
+
+// functions
+const convertUnixToTimeIntl = (time) => {
+  return new Date(time * 1000).toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+    hour12: true,
+  });
+};
 
 const WeatherWidgets = ({ data, theme }) => {
   // variables
@@ -17,34 +27,32 @@ const WeatherWidgets = ({ data, theme }) => {
 
   const { isMobileOnly } = useDeviceDetection();
 
-  const sunriseTime = new Date(sunrise * 1000).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
-  const sunsetTime = new Date(sunset * 1000).toLocaleTimeString([], {
-    hour: "2-digit",
-    minute: "2-digit",
-  });
+  const sunriseTime = useMemo(() => convertUnixToTimeIntl(sunrise), [sunrise]);
+  const sunsetTime = useMemo(() => convertUnixToTimeIntl(sunset), [sunset]);
+  const imgSrc = useMemo(
+    () => `http://openweathermap.org/img/wn/${icon}@2x.png`,
+    [icon]
+  );
 
-  const widgetOptions = [
-    { name: "humidity", value: humidity, class: "water", Unit: "%" },
-    {
-      name: "wind speed",
-      value: (speed * 3.6).toFixed(0),
-      class: "wind",
-      Unit: "Km/h",
-    },
-    { name: "pressure", value: pressure, class: "speedometer", Unit: "hPa" },
-    {
-      name: "visibility",
-      value: (visibility / 1000).toFixed(0),
-      class: "eye",
-      Unit: "Km",
-    },
-  ];
-
-  // functions
-  const ImgSrc = `http://openweathermap.org/img/wn/${icon}@2x.png`;
+  const widgetOptions = useMemo(
+    () => [
+      { name: "humidity", value: humidity, class: "water", Unit: "%" },
+      {
+        name: "wind speed",
+        value: (speed * 3.6).toFixed(0),
+        class: "wind",
+        Unit: "Km/h",
+      },
+      { name: "pressure", value: pressure, class: "speedometer", Unit: "hPa" },
+      {
+        name: "visibility",
+        value: (visibility / 1000).toFixed(0),
+        class: "eye",
+        Unit: "Km",
+      },
+    ],
+    [humidity, speed, pressure, visibility]
+  );
 
   return (
     <div
@@ -72,7 +80,7 @@ const WeatherWidgets = ({ data, theme }) => {
             <p className="m-0">
               <span className="d-block fw-medium">Sunrise</span>
               <span className={`${theme ? "text-muted" : "text-light"} small`}>
-                {sunriseTime} AM
+                {sunriseTime}
               </span>
             </p>
           </div>
@@ -81,7 +89,7 @@ const WeatherWidgets = ({ data, theme }) => {
             <p className="m-0">
               <span className="d-block fw-medium">Sunset</span>
               <span className={`${theme ? "text-muted" : "text-light"} small`}>
-                {sunsetTime} PM
+                {sunsetTime}
               </span>
             </p>
           </div>
@@ -90,7 +98,7 @@ const WeatherWidgets = ({ data, theme }) => {
       <div className="col-lg-3 col-md-3 col-sm-3 col-3 d-flex flex-column justify-content-end ">
         <div className="h-75 d-flex">
           <Image
-            src={ImgSrc}
+            src={imgSrc}
             alt="weather icon"
             priority={true}
             width={100}

@@ -1,7 +1,7 @@
 "use client";
 
 // react hooks
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 // Components
 import Header from "@/Components/Header";
@@ -13,6 +13,26 @@ import WeeklyForecast from "@/Components/WeeklyForecast";
 // Hooks
 import { useDeviceDetection } from "@/hooks/deviceDetection";
 
+// functions
+
+const fetchWeatherData = async (location, endpoint) => {
+  try {
+    const query =
+      typeof location == "string"
+        ? `q=${location}`
+        : `lat=${location.lat}&lon=${location.lon}`;
+    if (!location) return;
+    const res = await fetch(
+      `https://api.openweathermap.org/data/2.5/${endpoint}?${query}&units=metric&appid=${process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY}`
+    );
+    if (!res.ok) throw new Error("Failed to fetch data");
+    return await res.json();
+  } catch (err) {
+    console.error(err);
+    return null
+  }
+};
+
 export default function Home() {
   const [location, setLocation] = useState("El Oued");
   const [weather, setWeather] = useState(null);
@@ -21,47 +41,20 @@ export default function Home() {
   const [theme, setTheme] = useState(true);
   const { isTablet } = useDeviceDetection();
 
-  // Get instant weather data
-  const handleGet = async () => {
-    try {
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?${
-          typeof location == "string"
-            ? `q=${location}`
-            : `lat=${location.lat}&lon=${location.lon}`
-        }&units=metric&appid=${process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY}`
-      );
-      if (!res.ok) throw new Error("Failed to fetch data");
-      const data = await res.json();
-      setWeather(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
 
-  // Get 5 Days / 3h Forecast
-  const DailyForecast = async () => {
-    try {
-      if (!location) return;
-      const res = await fetch(
-        `https://api.openweathermap.org/data/2.5/forecast?${
-          typeof location == "string"
-            ? `q=${location}`
-            : `lat=${location.lat}&lon=${location.lon}`
-        }&units=metric&appid=${process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY}`
-      );
-      if (!res.ok) throw new Error("Failed to fetch data");
-      const data = await res.json();
-      setForecast(data);
-    } catch (err) {
-      console.error(err);
-    }
-  };
+  const updateWeatherData = useCallback(async () => {
+    const [weatherData, forecastData] = await Promise.all([
+      fetchWeatherData(location, "weather"),
+      fetchWeatherData(location, "forecast"),
+    ]);
+    
+    setWeather(weatherData);
+    setForecast(forecastData);
+  }, [location]);
 
   useEffect(() => {
-    handleGet();
-    DailyForecast();
-  }, [location]);
+    updateWeatherData();
+  }, [updateWeatherData]);
 
   useEffect(() => {
     document.documentElement.setAttribute(
