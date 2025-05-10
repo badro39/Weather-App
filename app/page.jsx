@@ -5,7 +5,7 @@ import { useCallback, useEffect, useState } from "react";
 
 // Components
 import Header from "@/Components/Header";
-import HourlyForecast from "@/Components/HourlyForecast";
+import {HourlyForecast} from "@/Components/HourlyForecast";
 import TimeLocation from "@/Components/TimeLocation";
 import WeatherWidgets from "@/Components/WeatherWidgets";
 import WeeklyForecast from "@/Components/WeeklyForecast";
@@ -29,7 +29,7 @@ const fetchWeatherData = async (location, endpoint) => {
     return await res.json();
   } catch (err) {
     console.error(err);
-    return null
+    return null;
   }
 };
 
@@ -41,13 +41,12 @@ export default function Home() {
   const [theme, setTheme] = useState(true);
   const { isTablet } = useDeviceDetection();
 
-
   const updateWeatherData = useCallback(async () => {
     const [weatherData, forecastData] = await Promise.all([
       fetchWeatherData(location, "weather"),
       fetchWeatherData(location, "forecast"),
     ]);
-    
+
     setWeather(weatherData);
     setForecast(forecastData);
   }, [location]);

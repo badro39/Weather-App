@@ -9,6 +9,7 @@ import { useDeviceDetection } from "@/hooks/deviceDetection";
 
 // functions
 const convertUnixToTimeIntl = (unixTimestamp) => {
+  if (!unixTimestamp) return;
   // Convert Unix timestamp to milliseconds
   const date = new Date(unixTimestamp * 1000);
 
@@ -21,27 +22,30 @@ const convertUnixToTimeIntl = (unixTimestamp) => {
   });
 };
 
-const WeeklyForecast = ({ forecast, theme }) => {
+const DayOrNight = (date, sunrise, sunset) => {
+  if (!date || !sunrise || !sunset) return;
+  return date > convertUnixToTimeIntl(sunrise) &&
+    date < convertUnixToTimeIntl(sunset)
+    ? "Day"
+    : "Night";
+};
+
+const HourlyForecast = ({ forecast, theme }) => {
   // variables
-  const todayForecast = forecast.list.slice(0, 5).map((item) => ({
-    time: item.dt_txt.split(" ")[1],
-    temp: item.main.temp,
-    icon: `http://openweathermap.org/img/wn/${item.weather[0].icon}.png`,
-    wind: item.wind,
-  }));
+  const todayForecast = forecast.list
+    .slice(0, 5)
+    .map(({ dt_txt, main, weather, wind }) => ({
+      time: dt_txt?.split(" ")[1],
+      temp: main?.temp,
+      icon: `http://openweathermap.org/img/wn/${weather[0]?.icon}.png`,
+      wind: wind,
+    }));
 
   const { isMobileOnly, isDesktop } = useDeviceDetection();
 
   // Functions
-
-  const DayOrNight = (date) => {
-    if (
-      date > convertUnixToTimeIntl(forecast.city.sunrise) &&
-      date < convertUnixToTimeIntl(forecast.city.sunset)
-    )
-      return "day";
-    else return "night";
-  };
+  const isDay = (date) =>
+    DayOrNight(date, forecast.city.sunrise, forecast.city.sunset);
 
   return (
     <div
@@ -52,32 +56,32 @@ const WeeklyForecast = ({ forecast, theme }) => {
     >
       <h4 className="fw-bold my-md-3">Hourly Forecast:</h4>
       <ul className="p-0 col-lg-11 col-12 d-flex mx-auto justify-content-around">
-        {todayForecast.map((item, index) => {
+        {todayForecast.map(({ time, icon, temp, wind }, index) => {
           return (
             <li
               key={index}
               className={`col-2 rounded-5 pt-2 ${
-                DayOrNight(item.time) == "day" ? styles.day : styles.night
+                isDay(time) == "Day" ? styles.day : styles.night
               }`}
             >
-              <p className="fw-bold">{item.time.slice(0, 5)}</p>
+              <p className="fw-bold">{time.slice(0, 5)}</p>
               <Image
-                src={item.icon}
+                src={icon}
                 alt="weather icon"
                 width={50}
                 height={50}
                 priority={true}
               />
-              <p className="fw-medium">{item.temp.toFixed(0)}°C</p>
+              <p className="fw-medium">{temp.toFixed(0)}°C</p>
               <Image
                 src="/communication.png"
                 alt="wind icon"
                 width={20}
                 height={20}
-                style={{ transform: `rotate(${item.wind.deg - 90}deg)` }}
+                style={{ transform: `rotate(${wind?.deg - 90}deg)` }}
               />
               <p className={`fw-medium ${isMobileOnly ? "small" : ""}`}>
-                {(item.wind.speed * 3.6).toFixed(0)}Km/h
+                {(wind?.speed * 3.6).toFixed(0)}Km/h
               </p>
             </li>
           );
@@ -86,4 +90,4 @@ const WeeklyForecast = ({ forecast, theme }) => {
     </div>
   );
 };
-export default WeeklyForecast;
+export { convertUnixToTimeIntl, DayOrNight, HourlyForecast };

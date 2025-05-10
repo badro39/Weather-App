@@ -7,12 +7,13 @@ import { useEffect, useState } from "react";
 
 // Average Daily temp
 const extractWeatherData = (data) => {
+  if(!data?.list) return;
   const dailyTemps = {};
 
-  data.list.forEach((entry) => {
-    const date = entry.dt_txt.split(" ")[0]; // Extract YYYY-MM-DD
-    const temp = entry.main.temp;
-    const icon = `http://openweathermap.org/img/wn/${entry.weather[0].icon}.png`;
+  data.list.forEach(({dt_txt, main, weather}) => {
+    const date = dt_txt?.split(" ")[0]; // Extract YYYY-MM-DD
+    const temp = main?.temp;
+    const icon = `http://openweathermap.org/img/wn/${weather[0]?.icon}.png`;
 
     if (!dailyTemps[date]) {
       dailyTemps[date] = { sum: 0, count: 0, icon };
